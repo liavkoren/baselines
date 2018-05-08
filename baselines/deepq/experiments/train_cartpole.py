@@ -1,11 +1,23 @@
-import gym
+import json
 
 from baselines import deepq
+from google.colab import files
+import gym
+
+
 
 
 def callback(lcl, _glb):
+    # locals, globals passed from training function. This gets to decide if the
     # stop training if reward exceeds 199
     is_solved = lcl['t'] > 100 and sum(lcl['episode_rewards'][-101:-1]) / 100 >= 199
+    info = {
+        'episode_rewards': lcl['episode_rewards'],
+        'td_errors': lcl['td_errors'],
+        'mean_100ep_reward': lcl['mean_100ep_reward'],
+    }
+    print(json.dumps(info), end='', flush=False)
+    files.download(lcl['model_file']) # from colab to browser download
     return is_solved
 
 
